@@ -8,9 +8,12 @@ async function dbConnect() {
   const db = await connect(process.env.MONGODB_URI, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
+    useFindAndModify: false
   });
 
-  console.log("Connected to:", db.connection.name);
+  connection.isConected = db.connections[0].readyState;
+
+  console.log(connection.isConected)
 }
 
 export default dbConnect;

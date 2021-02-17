@@ -6,12 +6,12 @@ const TaskSchema = new Schema({
     required: [true, "The Task title is required "],
     unique: true,
     trim: true,
-    maxLength: [40, "title cannot be grater than 40 characters"],
+    maxlength: [40, "title cannot be grater than 40 characters"],
   },
   description: {
     type: String,
     required: true,
-    maxLength: [200, "title cannot be grater than 200 characters"],
+    maxlength: [200, "title cannot be grater than 200 characters"],
   },
 });
 
