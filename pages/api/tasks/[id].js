@@ -1,4 +1,4 @@
-import dbConnect from "../../../utils/dbConnect";
+import dbConnect from "../../../utils/mongoose";
 import Task from "../../../models/Task";
 
 dbConnect();
@@ -14,11 +14,11 @@ export default async (req, res) => {
       try {
         const task = await Task.findById(id);
 
-        if (!task) return res.status(400).json();
+        if (!task) return res.status(400).json({ msg: "bad request" });
 
         res.status(200).json({ task });
       } catch (error) {
-        res.status(400).json();
+        return res.status(400).json({ msg: "Bad Request" });
       }
       break;
     case "PUT":
@@ -45,6 +45,6 @@ export default async (req, res) => {
       }
       break;
     default:
-      res.status(400).json();
+      return res.status(400).json();
   }
 };

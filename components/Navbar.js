@@ -1,14 +1,23 @@
+import { Input, Menu, Container, Button } from "semantic-ui-react";
 import Link from "next/link";
 
 const Navbar = () => (
-  <nav className="navbar">
-    <Link href="/">
-      <a className="navbar-brand">Task App</a>
-    </Link>
-    <Link href="/new">
-      <a className="create">Create Task</a>
-    </Link>
-  </nav>
+  <Menu inverted borderless style={{ padding: ".3rem" }}>
+    <Container>
+      <Menu.Item name="home">
+        <Link href="/">
+          <img src="/react.svg" />
+        </Link>
+      </Menu.Item>
+      <Menu.Menu position="right">
+        <Menu.Item name="new-task">
+          <Link href="/new">
+            <Button size="mini" primary>New Task</Button>
+          </Link>
+        </Menu.Item>
+      </Menu.Menu>
+    </Container>
+  </Menu>
 );
 
 export default Navbar;

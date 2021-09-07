@@ -1,11 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
 import { Confirm, Button, Loader } from "semantic-ui-react";
+import Error from "next/error";
 
-const Task = ({ task }) => {
+const Task = ({ task, error }) => {
   const [confirm, setConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
   const router = useRouter();
+  console.log(error);
 
   useEffect(() => {
     if (isDeleting) {
@@ -33,6 +35,9 @@ const Task = ({ task }) => {
     close();
   };
 
+  if (error && error.statusCode)
+    return <Error statusCode={error.statusCode} title={error.statusText} />;
+
   return (
     <div className="task-container">
       {isDeleting ? (
@@ -54,11 +59,22 @@ const Task = ({ task }) => {
 
 export async function getServerSideProps({ query: { id } }) {
   const res = await fetch(`http://localhost:3000/api/tasks/${id}`);
-  const data = await res.json();
+
+  if (res.status === 200) {
+    const data = await res.json();
+    return {
+      props: {
+        task: data.task,
+      },
+    };
+  }
 
   return {
     props: {
-      task: data.task,
+      error: {
+        statusCode: res.status,
+        statusText: "Invalid Id",
+      },
     },
   };
 }

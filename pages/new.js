@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { Button, Form, Loader } from "semantic-ui-react";
+import { Button, Form, Grid, Loader } from "semantic-ui-react";
 
 import { useRouter } from "next/router";
 
@@ -30,9 +30,8 @@ const NewTask = () => {
     setIsSubmitting(true);
   };
 
-  const handleChange = (e) => {
+  const handleChange = (e) =>
     setForm({ ...form, [e.target.name]: e.target.value });
-  };
 
   const validate = () => {
     let err = {};
@@ -63,40 +62,55 @@ const NewTask = () => {
   };
 
   return (
-    <div className="form-container">
-      <h1>Create Task</h1>
-      <div>
-        {isSubmitting ? (
-          <Loader active inline="centered" />
-        ) : (
-          <Form onSubmit={handleSubmit}>
-            <Form.Input
-              error={
-                errors.title
-                  ? { content: "Please enter a title", pointing: "below" }
-                  : null
-              }
-              label="Title"
-              placeholder="Title"
-              name="title"
-              onChange={handleChange}
-            />
-            <Form.TextArea
-              error={
-                errors.description
-                  ? { content: "Please enter a Description", pointing: "below" }
-                  : null
-              }
-              label="Description"
-              placeholder="Description"
-              name="description"
-              onChange={handleChange}
-            />
-            <Button type="submit">Create</Button>
-          </Form>
-        )}
-      </div>
-    </div>
+    <Grid
+      centered
+      verticalAlign="middle"
+      columns="3"
+      style={{ height: "80vh" }}
+    >
+      <Grid.Row>
+        <Grid.Column textAlign="center">
+          <div className="form-container">
+            <h1>Create Task</h1>
+            <div>
+              {isSubmitting ? (
+                <Loader active inline="centered" />
+              ) : (
+                <Form onSubmit={handleSubmit}>
+                  <Form.Input
+                    error={
+                      errors.title
+                        ? { content: "Please enter a title", pointing: "below" }
+                        : null
+                    }
+                    label="Title"
+                    placeholder="Title"
+                    name="title"
+                    onChange={handleChange}
+                    autoFocus
+                  />
+                  <Form.TextArea
+                    error={
+                      errors.description
+                        ? {
+                            content: "Please enter a Description",
+                            pointing: "below",
+                          }
+                        : null
+                    }
+                    label="Description"
+                    placeholder="Description"
+                    name="description"
+                    onChange={handleChange}
+                  />
+                  <Button type="submit">Save</Button>
+                </Form>
+              )}
+            </div>
+          </div>
+        </Grid.Column>
+      </Grid.Row>
+    </Grid>
   );
 };
 
