@@ -1,27 +1,19 @@
 import React, { useState, useEffect } from "react";
 import { useRouter } from "next/router";
-import { Confirm, Button, Loader } from "semantic-ui-react";
+import { Confirm, Button, Loader, Grid } from "semantic-ui-react";
 import Error from "next/error";
 
 const Task = ({ task, error }) => {
   const [confirm, setConfirm] = useState(false);
   const [isDeleting, setIsDeleting] = useState(false);
-  const router = useRouter();
-  console.log(error);
-
-  useEffect(() => {
-    if (isDeleting) {
-      deleteTask();
-    }
-  }, [isDeleting]);
+  const { query, push } = useRouter();
 
   const deleteTask = async () => {
-    const taskId = router.query.id;
+    const { id } = query;
     try {
-      const deleted = await fetch(`http://localhost:3000/api/tasks/${taskId}`, {
+      await fetch(`http://localhost:3000/api/tasks/${id}`, {
         method: "DELETE",
       });
-      router.push("/");
     } catch (error) {
       console.error(error);
     }
@@ -32,6 +24,8 @@ const Task = ({ task, error }) => {
 
   const handleDelete = async () => {
     setIsDeleting(true);
+    await deleteTask();
+    push("/");
     close();
   };
 
@@ -39,21 +33,33 @@ const Task = ({ task, error }) => {
     return <Error statusCode={error.statusCode} title={error.statusText} />;
 
   return (
-    <div className="task-container">
-      {isDeleting ? (
-        <Loader active></Loader>
-      ) : (
-        <>
+    <Grid
+      centered
+      verticalAlign="middle"
+      columns="1"
+      style={{ height: "80vh" }}
+    >
+      <Grid.Row>
+        <Grid.Column textAlign="center">
           <h1>{task.title}</h1>
           <p>{task.description}</p>
-          <Button color="red" onClick={open}>
-            Delete
-          </Button>
-        </>
-      )}
+          <div>
+            <Button color="red" onClick={open} loading={isDeleting}>
+              Delete
+            </Button>
+          </div>
+        </Grid.Column>
+      </Grid.Row>
 
-      <Confirm open={confirm} onConfirm={handleDelete} onCancel={close} />
-    </div>
+      {/* Confirm modal */}
+      <Confirm
+        content={`Are you sure to delete the task ${task._id}`}
+        header="Please confirm"
+        open={confirm}
+        onConfirm={handleDelete}
+        onCancel={close}
+      />
+    </Grid>
   );
 };
 
@@ -61,10 +67,11 @@ export async function getServerSideProps({ query: { id } }) {
   const res = await fetch(`http://localhost:3000/api/tasks/${id}`);
 
   if (res.status === 200) {
-    const data = await res.json();
+    const task = await res.json();
+
     return {
       props: {
-        task: data.task,
+        task,
       },
     };
   }

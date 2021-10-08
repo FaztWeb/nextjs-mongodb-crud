@@ -1,8 +1,11 @@
+import { Button, Card, Container, Grid } from "semantic-ui-react";
+import { useRouter } from "next/router";
 import Link from "next/link";
 
-import { Button, Card, Container, Grid } from "semantic-ui-react";
+export default function Index({ tasks = [] }) {
+  const router = useRouter();
 
-const Index = ({ tasks }) => {
+  // Render a not task view
   if (tasks.length === 0)
     return (
       <Grid
@@ -16,15 +19,16 @@ const Index = ({ tasks }) => {
             <h1>There are no tasks yet.</h1>
             <img src="https://img.freepik.com/vector-gratis/ningun-concepto-ilustracion-datos_108061-573.jpg?size=338&ext=jpg" />
             <div>
-              <Link href="/new">
-                <Button primary>Create Task</Button>
-              </Link>
+              <Button primary onClick={() => router.push("/tasks/new")}>
+                Create Task
+              </Button>
             </div>
           </Grid.Column>
         </Grid.Row>
       </Grid>
     );
 
+  // Render a list of tasks
   return (
     <Container>
       <Card.Group itemsPerRow={4}>
@@ -39,28 +43,27 @@ const Index = ({ tasks }) => {
               <p>{task.description}</p>
             </Card.Content>
             <Card.Content extra>
-              <Link href={`/${task._id}`}>
-                <Button primary>View</Button>
-              </Link>
-              <Link href={`/${task._id}/edit`}>
-                <Button primary>Edit</Button>
-              </Link>
+              <Button primary onClick={() => router.push(`/tasks/${task._id}`)}>
+                View
+              </Button>
+              <Button primary onClick={() => router.push(`/tasks/${task._id}/edit`)}>
+                Edit
+              </Button>
             </Card.Content>
           </Card>
         ))}
       </Card.Group>
     </Container>
   );
-};
+}
 
 export async function getServerSideProps() {
   const res = await fetch("http://localhost:3000/api/tasks");
-  const { tasks } = await res.json();
+  const tasks = await res.json();
+
   return {
     props: {
       tasks,
     },
   };
 }
-
-export default Index;

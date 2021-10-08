@@ -107,11 +107,11 @@ const EditTask = ({ task }) => {
 
 export async function getServerSideProps({ query: { id } }) {
   const res = await fetch(`http://localhost:3000/api/tasks/${id}`);
-  const data = await res.json();
+  const task = await res.json();
 
   return {
     props: {
-      task: data.task,
+      task,
     },
   };
 }

@@ -4,58 +4,81 @@ import { Button, Form, Grid, Loader } from "semantic-ui-react";
 import { useRouter } from "next/router";
 
 const NewTask = () => {
-  const [form, setForm] = useState({
+  const [newTask, setNewTask] = useState({
     title: "",
     description: "",
   });
+  const { query, push } = useRouter();
 
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errors, setErrors] = useState({});
-  const router = useRouter();
+
+  const getTask = async () => {
+    const res = await fetch("http://localhost:3000/api/tasks/" + query.id);
+    const data = await res.json();
+    setNewTask({ title: data.title, description: data.description });
+  };
 
   useEffect(() => {
-    if (isSubmitting) {
-      if (Object.keys(errors).length === 0) {
-        createTask();
-      } else {
-        setIsSubmitting(false);
-      }
-    }
-  }, [errors]);
+    if (query.id) getTask();
+  }, []);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     let errs = validate();
-    setErrors(errs);
+
+    if (Object.keys(errs).length) return setErrors(errs);
+
     setIsSubmitting(true);
+
+    if (query.id) {
+      await updateTask();
+    } else {
+      await createTask();
+    }
+
+    await push("/");
   };
 
   const handleChange = (e) =>
-    setForm({ ...form, [e.target.name]: e.target.value });
+    setNewTask({ ...newTask, [e.target.name]: e.target.value });
 
   const validate = () => {
-    let err = {};
-    if (!form.title) {
-      err.title = "Title is required";
+    let errors = {};
+
+    if (!newTask.title) {
+      errors.title = "Title is required";
     }
-    if (!form.description) {
-      err.description = "Description is required";
+    if (!newTask.description) {
+      errors.description = "Description is required";
     }
 
-    return err;
+    return errors;
   };
 
   const createTask = async () => {
     try {
-      const res = await fetch("http://localhost:3000/api/tasks", {
+      await fetch("http://localhost:3000/api/tasks", {
         method: "POST",
         headers: {
-          Accept: "application/json",
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(form),
+        body: JSON.stringify(newTask),
       });
-      router.push("/");
+    } catch (error) {
+      console.error(error);
+    }
+  };
+
+  const updateTask = async () => {
+    try {
+      await fetch("http://localhost:3000/api/tasks/" + query.id, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(newTask),
+      });
     } catch (error) {
       console.error(error);
     }
@@ -71,7 +94,7 @@ const NewTask = () => {
       <Grid.Row>
         <Grid.Column textAlign="center">
           <div className="form-container">
-            <h1>Create Task</h1>
+            <h1>{!query.id ? "Create Task" : "Update task"}</h1>
             <div>
               {isSubmitting ? (
                 <Loader active inline="centered" />
@@ -87,6 +110,7 @@ const NewTask = () => {
                     placeholder="Title"
                     name="title"
                     onChange={handleChange}
+                    value={newTask.title}
                     autoFocus
                   />
                   <Form.TextArea
@@ -102,8 +126,11 @@ const NewTask = () => {
                     placeholder="Description"
                     name="description"
                     onChange={handleChange}
+                    value={newTask.description}
                   />
-                  <Button type="submit">Save</Button>
+                  <Button type="submit" primary>
+                    {query.id ? "Update" : "Save"}
+                  </Button>
                 </Form>
               )}
             </div>
