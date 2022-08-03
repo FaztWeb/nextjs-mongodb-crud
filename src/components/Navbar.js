@@ -9,7 +9,6 @@ export const Navbar = () => {
     <Menu
       inverted
       borderless
-      style={{ padding: ".3rem", marginBottom: "20px" }}
       attached
     >
       <Container>
@@ -29,6 +28,10 @@ export const Navbar = () => {
             </Button>
           </Menu.Item>
         </Menu.Menu>
+        <div>
+          <Link href="/auth/login">login</Link>
+          <Link href="/auth/register">Register</Link>
+        </div>
       </Container>
     </Menu>
   );

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Button, Form, Loader } from "semantic-ui-react";
-
 import { useRouter } from "next/router";
 
 const EditTask = ({ task }) => {

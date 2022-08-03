@@ -3,7 +3,7 @@ import Task from "models/Task";
 
 dbConnect();
 
-export default async (req, res) => {
+export default async function tasksHandler(req, res) {
   const {
     method,
     query: { id },
@@ -42,4 +42,4 @@ export default async (req, res) => {
     default:
       return res.status(400).json({ msg: "This method is not supported" });
   }
-};
+}

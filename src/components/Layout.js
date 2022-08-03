@@ -8,6 +8,6 @@ export const Layout = ({ children }) => (
     </Head>
     <Navbar />
 
-    {children}
+    <main className="bg-zinc-800 min-h-screen">{children}</main>
   </>
 );
