@@ -1,5 +1,5 @@
-import Task from "../../../models/Task";
-import { dbConnect } from "../../../utils/mongoose";
+import Task from "@/models/Task";
+import { dbConnect } from "@/utils/mongoose";
 import { NextResponse } from "next/server";
 
 export async function GET() {

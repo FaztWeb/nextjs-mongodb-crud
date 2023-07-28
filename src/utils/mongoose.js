@@ -9,8 +9,10 @@ export async function dbConnect() {
     return;
   }
 
-  const db = await connect(process.env.MONGODB_URI);
-  console.log(db.connection.db.databaseName);
+  const db = await connect(
+    process.env.MONGODB_URI || "mongodb://localhost:27017/nextjs"
+  );
+  // console.log(db.connection.db.databaseName);
   conn.isConnected = db.connections[0].readyState;
 }
 

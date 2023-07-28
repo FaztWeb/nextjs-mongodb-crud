@@ -1,15 +1,21 @@
-function HomePage() {
-  return (
-    <header className="bg-gray-900 p-20 text-white">
-      <h1 className="text-5xl font-bold">NextMongo App</h1>
-      <p className="my-4 text-emerald-50 text-lg">
-        Lorem ipsum dolor sit amet consectetur, adipisicing elit. Nobis placeat
-        recusandae autem omnis, repudiandae commodi dolorem pariatur aliquid
-        reprehenderit quo quis facere vitae blanditiis labore nihil
-        exercitationem vero unde vel.
-      </p>
-    </header>
-  );
+import { dbConnect } from "@/utils/mongoose";
+import TaskCard from "@/components/TaskCard";
+import Task from "@/models/Task";
+
+export async function loadTasks() {
+  await dbConnect();
+  const tasks = await Task.find();
+  return tasks;
 }
 
-export default HomePage;
+export default async function HomePage() {
+  const tasks = await loadTasks();
+
+  return (
+    <div className="grid md:grid-cols-3 gap-2">
+      {tasks.map((task) => (
+        <TaskCard task={task} key={task._id} />
+      ))}
+    </div>
+  );
+}
