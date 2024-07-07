@@ -2,6 +2,8 @@ import { dbConnect } from "@/utils/mongoose";
 import TaskCard from "@/components/TaskCard";
 import Task from "@/models/Task";
 
+export const dynamic = "force-dynamic";
+
 export async function loadTasks() {
   await dbConnect();
   const tasks = await Task.find();
