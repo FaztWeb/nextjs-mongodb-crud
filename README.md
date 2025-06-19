@@ -10,3 +10,9 @@ cd next-mongodb-crud
 npm i
 npm run dev
 ```
+
+its necessary to have a mongodb env:
+
+```
+MONGODB_URI=mongodb://localhost:27017/nextcrud
+```
